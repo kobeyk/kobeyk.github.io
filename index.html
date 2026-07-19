@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>遥感影像智能解译框架 — 功能全景</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'PingFang SC','Microsoft YaHei','Hiragino Sans GB','Noto Sans SC',sans-serif;
+    background:#030712;
+    color:#e2e8f0;
+    overflow-x:hidden;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar{width:5px}
+  ::-webkit-scrollbar-track{background:#030712}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#06d6a0,#38bdf8);border-radius:3px}
+
+  /* ===== CANVAS BACKGROUND ===== */
+  #starfield{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;z-index:1;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:80px 24px;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;
+    top:50%;left:50%;transform:translate(-50%,-50%);
+    width:900px;height:900px;
+    background:radial-gradient(circle,rgba(6,214,160,0.07) 0%,rgba(56,189,248,0.03) 35%,transparent 70%);
+    pointer-events:none;
+    animation:breathe 8s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.8}
+    50%{transform:translate(-50%,-50%) scale(1.15);opacity:1}
+  }
+  .hero-content{position:relative;z-index:2;max-width:960px}
+
+  /* Platform badge */
+  .platform-badge{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:7px 20px;border-radius:100px;
+    border:1px solid rgba(6,214,160,0.22);
+    background:rgba(6,214,160,0.05);
+    color:#06d6a0;font-size:0.82rem;letter-spacing:0.08em;
+    margin-bottom:36px;
+    backdrop-filter:blur(8px);
+  }
+  .platform-badge .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:#06d6a0;
+    animation:ping 2s ease-in-out infinite;
+  }
+  @keyframes ping{
+    0%,100%{box-shadow:0 0 8px #06d6a0,0 0 24px rgba(6,214,160,0.4)}
+    50%{box-shadow:0 0 16px #06d6a0,0 0 40px rgba(6,214,160,0.7)}
+  }
+
+  /* Big title */
+  .hero h1{
+    font-size:clamp(3.2rem,7vw,5.6rem);
+    font-weight:900;line-height:1.1;letter-spacing:-0.03em;
+    margin-bottom:24px;
+  }
+  .hero h1 .line1{
+    display:block;
+    background:linear-gradient(135deg,#f1f5f9 0%,#94a3b8 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    text-shadow:none;
+    filter:drop-shadow(0 0 40px rgba(56,189,248,0.15));
+  }
+  .hero h1 .line2{
+    display:block;font-size:0.75em;
+    background:linear-gradient(135deg,#06d6a0 0%,#38bdf8 40%,#a78bfa 75%,#f59e0b 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    filter:drop-shadow(0 0 50px rgba(6,214,160,0.3));
+    animation:shimmer 4s ease-in-out infinite;
+    background-size:200% 100%;
+  }
+  @keyframes shimmer{
+    0%,100%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+  }
+  .hero-desc{
+    font-size:1.15rem;color:#94a3b8;max-width:600px;
+    margin:0 auto 44px;line-height:1.75;
+  }
+  .hero-stats{
+    display:flex;gap:56px;justify-content:center;flex-wrap:wrap;
+  }
+  .hero-stat{text-align:center}
+  .hero-stat .num{
+    font-size:2.6rem;font-weight:900;
+    background:linear-gradient(180deg,#e2e8f0,#64748b);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .hero-stat .label{font-size:0.78rem;color:#64748b;margin-top:2px;letter-spacing:0.04em}
+
+  /* ===== SCROLL PROMPT — BIG & OBVIOUS ===== */
+  .scroll-prompt{
+    position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+    z-index:2;
+    animation:float-updown 2.4s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes float-updown{
+    0%,100%{transform:translateX(-50%) translateY(0)}
+    50%{transform:translateX(-50%) translateY(14px)}
+  }
+  .scroll-prompt .ring-outer{
+    width:56px;height:56px;border-radius:50%;
+    border:2px solid rgba(6,214,160,0.3);
+    display:flex;align-items:center;justify-content:center;
+    animation:pulse-ring 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse-ring{
+    0%,100%{border-color:rgba(6,214,160,0.2);box-shadow:0 0 0 0 rgba(6,214,160,0.15)}
+    50%{border-color:rgba(6,214,160,0.5);box-shadow:0 0 0 16px rgba(6,214,160,0)}
+  }
+  .scroll-prompt .chevron{
+    width:16px;height:16px;
+    border-right:2.5px solid #06d6a0;
+    border-bottom:2.5px solid #06d6a0;
+    transform:rotate(45deg);
+    animation:sink 1.2s ease-in-out infinite;
+  }
+  @keyframes sink{
+    0%,100%{opacity:0.3;transform:rotate(45deg) translateY(-4px)}
+    50%{opacity:1;transform:rotate(45deg) translateY(4px)}
+  }
+  .scroll-prompt .label{
+    font-size:0.7rem;letter-spacing:0.16em;color:#475569;
+  }
+
+  /* ===== SECTION ===== */
+  .section{
+    position:relative;z-index:1;
+    max-width:1400px;margin:0 auto;
+    padding:100px 24px;
+  }
+  .section-header{margin-bottom:52px}
+  .section-eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:0.72rem;letter-spacing:0.12em;color:#06d6a0;
+    margin-bottom:10px;
+  }
+  .section-eyebrow::before{
+    content:'';width:28px;height:1px;background:rgba(6,214,160,0.35);
+  }
+  .section-header h2{
+    font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-0.01em;
+  }
+  .section-header .subtitle{color:#64748b;font-size:0.92rem;margin-top:6px}
+
+  /* ===== MODULE GRID ===== */
+  .module-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(360px,1fr));
+    gap:20px;
+  }
+  .module-card{
+    position:relative;
+    background:rgba(15,23,42,0.65);
+    border:1px solid rgba(56,189,248,0.07);
+    border-radius:16px;overflow:hidden;
+    cursor:pointer;
+    transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+  }
+  .module-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(56,189,248,0.22);
+    box-shadow:0 20px 60px -20px rgba(6,214,160,0.1),
+               0 0 0 1px rgba(56,189,248,0.08) inset;
+  }
+  .module-card .card-thumb{
+    position:relative;width:100%;aspect-ratio:16/10;
+    overflow:hidden;background:rgba(3,7,18,0.5);
+  }
+  .module-card img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  }
+  .module-card:hover img{transform:scale(1.04)}
+  .module-card .card-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,transparent 55%,rgba(3,7,18,0.85));
+    display:flex;align-items:flex-end;padding:16px;
+    opacity:0;transition:opacity 0.3s;
+  }
+  .module-card:hover .card-overlay{opacity:1}
+  .card-overlay .zoom-badge{
+    padding:6px 14px;border-radius:6px;
+    background:rgba(3,7,18,0.65);
+    border:1px solid rgba(255,255,255,0.08);
+    font-size:0.78rem;color:#e2e8f0;
+  }
+  .module-card .card-body{padding:14px 18px 18px}
+  .module-card .card-module{
+    font-size:0.68rem;letter-spacing:0.05em;
+    color:#06d6a0;margin-bottom:4px;
+  }
+  .module-card .card-title{font-size:0.92rem;font-weight:600;color:#e2e8f0}
+
+  /* Hero card */
+  .module-card.feature-card{
+    grid-column:1/-1;
+    display:grid;grid-template-columns:1.2fr 1fr;
+  }
+  .module-card.feature-card .card-thumb{aspect-ratio:auto;min-height:340px}
+  .module-card.feature-card .card-body{
+    display:flex;flex-direction:column;justify-content:center;padding:36px;
+  }
+  .module-card.feature-card .card-title{font-size:1.25rem;margin-bottom:6px}
+  .module-card.feature-card .card-desc{color:#94a3b8;font-size:0.88rem;line-height:1.65}
+
+  /* ===== REVEAL ===== */
+  .reveal{
+    opacity:0;transform:translateY(36px);
+    transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),
+               transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible{opacity:1;transform:translateY(0)}
+
+  /* ===== FOOTER ===== */
+  .footer{
+    position:relative;z-index:1;
+    text-align:center;padding:60px 24px;
+    border-top:1px solid rgba(56,189,248,0.06);
+    color:#475569;font-size:0.78rem;
+  }
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(3,7,18,0.93);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;
+    transition:opacity 0.35s cubic-bezier(0.16,1,0.3,1);
+    padding:24px;
+  }
+  .lightbox.open{opacity:1;pointer-events:auto}
+  .lightbox-inner{
+    position:relative;max-width:min(94vw,1400px);max-height:90vh;
+    display:flex;flex-direction:column;align-items:center;
+    transform:scale(0.94);transition:transform 0.45s cubic-bezier(0.16,1,0.3,1);
+  }
+  .lightbox.open .lightbox-inner{transform:scale(1)}
+  .lightbox img{
+    max-width:100%;max-height:78vh;border-radius:12px;
+    box-shadow:0 40px 120px -20px rgba(0,0,0,0.6),
+               0 0 0 1px rgba(56,189,248,0.08);
+    object-fit:contain;
+  }
+  .lightbox-caption{margin-top:18px;text-align:center}
+  .lb-mod{font-size:0.68rem;letter-spacing:0.08em;color:#06d6a0;margin-bottom:4px}
+  .lb-name{font-size:1.05rem;font-weight:600;color:#e2e8f0}
+  .lb-close{
+    position:absolute;top:-48px;right:0;
+    background:none;border:none;color:#94a3b8;cursor:pointer;
+    width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+    border-radius:8px;font-size:1.4rem;transition:all 0.2s;
+  }
+  .lb-close:hover{color:#f1f5f9;background:rgba(255,255,255,0.05)}
+  .lb-nav{
+    position:absolute;top:50%;transform:translateY(-50%);
+    background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.08);
+    color:#e2e8f0;width:48px;height:48px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:1.2rem;transition:all 0.25s;
+    backdrop-filter:blur(8px);
+  }
+  .lb-nav:hover{background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.3)}
+  .lb-prev{left:-64px}.lb-next{right:-64px}
+  .lb-counter{position:absolute;bottom:-42px;left:50%;transform:translateX(-50%);color:#64748b;font-size:0.78rem}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:768px){
+    .hero{padding:60px 16px}
+    .hero-stats{gap:28px}
+    .hero-stat .num{font-size:2rem}
+    .module-grid{grid-template-columns:1fr}
+    .module-card.feature-card{grid-template-columns:1fr}
+    .module-card.feature-card .card-body{padding:20px}
+    .section{padding:56px 16px}
+    .lb-prev{left:4px}.lb-next{right:4px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none;transition:none}
+    .scroll-prompt,.hero::before{animation:none}
+    .module-card:hover{transform:none}
+    .module-card:hover img{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="platform-badge">
+      <span class="dot"></span> 遥感影像智能解译框架
+    </div>
+    <h1>
+      <span class="line1"></span>
+      <span class="line2">从像素到洞察 · AI 驱动遥感分析</span>
+    </h1>
+    <p class="hero-desc">
+      集多源数据管理、样本标注、模型训练、智能解译与 Agent 协作于一体，
+      为遥感影像分析提供端到端的智能化解决方案
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">6</div><div class="label">核心功能模块</div></div>
+      <div class="hero-stat"><div class="num">19</div><div class="label">功能子页面</div></div>
+      <div class="hero-stat"><div class="num">AI</div><div class="label">Agent 智能驱动</div></div>
+    </div>
+  </div>
+
+  <!-- BIG SCROLL PROMPT -->
+  <div class="scroll-prompt">
+    <div class="ring-outer">
+      <div class="chevron"></div>
+    </div>
+    <div class="label">向下滚动探索</div>
+  </div>
+</section>
+
+<!-- ===== MODULE SECTIONS ===== -->
+<main id="mainContent"></main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p>遥感影像智能解译框架 · IIS &copy; 2026</p>
+</footer>
+
+<!-- ===== LIGHTBOX ===== -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lb-close" id="lbClose" aria-label="关闭">✕</button>
+    <button class="lb-nav lb-prev" id="lbPrev" aria-label="上一张">←</button>
+    <img src="" alt="" id="lbImg">
+    <button class="lb-nav lb-next" id="lbNext" aria-label="下一张">→</button>
+    <div class="lightbox-caption">
+      <div class="lb-mod" id="lbModule"></div>
+      <div class="lb-name" id="lbTitle"></div>
+    </div>
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const modules = [
+  {
+    id:'dashboard', name:'首页大屏', icon:'🖥️',
+    desc:'全局态势感知，关键指标一屏统览，支持多维度数据可视化与实时监控',
+    images:[{file:'1_首页大屏.png',name:'首页大屏'}]
+  },
+  {
+    id:'sample', name:'标样中心', icon:'🎯',
+    desc:'样本库管理与标注体系，支持分布式任务调度、日志链路追踪及一键训练',
+    images:[
+      {file:'2_标样中心_样本库管理.png',name:'样本库管理'},
+      {file:'3_标样中心_样本库_样本详情查看.png',name:'样本详情查看'},
+      {file:'4.1_标样中心_样本库_分布式任务调度_日志链路追踪.png',name:'分布式任务调度·日志链路追踪 ①'},
+      {file:'4.2_标样中心_样本库_分布式任务调度_日志链路追踪.png',name:'分布式任务调度·日志链路追踪 ②'},
+      {file:'5_标样中心_样本库_样本集（一键训练）.png',name:'样本集（一键训练）'},
+    ]
+  },
+  {
+    id:'data', name:'数据中心', icon:'🗄️',
+    desc:'多源异构遥感数据统一管理，支持影像、矢量、瓦片等多种数据格式接入与检索',
+    images:[
+      {file:'6_数据中心_多源异构数据管理.png',name:'多源异构数据管理 ①'},
+      {file:'7_数据中心_多源异构数据管理.png',name:'多源异构数据管理 ②'},
+      {file:'8_数据中心☞多源异构数据管理.png',name:'多源异构数据管理 ③'},
+      {file:'9_数据中心_多源异构数据管理.png',name:'多源异构数据管理 ④'},
+    ]
+  },
+  {
+    id:'model', name:'模型中心', icon:'🧠',
+    desc:'模型参数配置与解译任务创建，支持多种AI模型管理与调优',
+    images:[
+      {file:'10_模型中心.png',name:'模型中心总览'},
+      {file:'11_模型中心_模型参数.png',name:'模型参数配置'},
+      {file:'12_模型中心_创建解译任务.png',name:'创建解译任务'},
+    ]
+  },
+  {
+    id:'task', name:'任务中心', icon:'📋',
+    desc:'解译结果预览与移动终端适配，随时随地掌握任务进展',
+    images:[
+      {file:'13_任务中心_结果预览.png',name:'结果预览'},
+      {file:'14_任务中心_移动终端解译.png',name:'移动终端解译'},
+    ]
+  },
+  {
+    id:'agent', name:'Agent 智能体', icon:'🤖',
+    desc:'AI Agent 辅助数据筛查与自动上图，借助 Dify 搭建人机交互解译工作流',
+    images:[
+      {file:'15_Agent智能客服.png',name:'Agent 智能客服'},
+      {file:'16_Agent辅助数据筛查及解译.png',name:'辅助数据筛查及解译'},
+      {file:'17_Agent辅助数据筛查自动上图.png',name:'辅助数据筛查·自动上图'},
+      {file:'18_借助Dify搭建人机交互解译工作流.png',name:'Dify 人机交互解译工作流'},
+    ]
+  }
+];
+
+const allImages = modules.flatMap(m => m.images.map(i => ({...i, module:m.name, moduleId:m.id})));
+const IMG_BASE = 'images/iis/';
+
+// ===== BUILD SECTIONS =====
+const main = document.getElementById('mainContent');
+modules.forEach((mod, idx) => {
+  const sec = document.createElement('section');
+  sec.className = 'section reveal';
+  sec.id = 'section-'+mod.id;
+  const isDashboard = mod.id==='dashboard';
+
+  sec.innerHTML = `
+    <div class="section-header">
+      <div class="section-eyebrow">${mod.icon}  Module ${String(idx+1).padStart(2,'0')}</div>
+      <h2>${mod.name}</h2>
+      <p class="subtitle">${mod.desc}</p>
+    </div>
+    <div class="module-grid">
+      ${mod.images.map((img, i) => {
+        const gIdx = allImages.findIndex(x => x.file===img.file && x.moduleId===mod.id);
+        if(isDashboard && i===0){
+          return `<div class="module-card feature-card" data-idx="${gIdx}">
+            <div class="card-thumb">
+              <img src="${IMG_BASE+img.file}" alt="${img.name}" loading="lazy">
+              <div class="card-overlay"><span class="zoom-badge">🔍 点击查看大图</span></div>
+            </div>
+            <div class="card-body">
+              <div class="card-module">${mod.name}</div>
+              <div class="card-title">${img.name}</div>
+              <div class="card-desc">${mod.desc}</div>
+            </div>
+          </div>`;
+        }
+        return `<div class="module-card" data-idx="${gIdx}">
+          <div class="card-thumb">
+            <img src="${IMG_BASE+img.file}" alt="${img.name}" loading="lazy">
+            <div class="card-overlay"><span class="zoom-badge">🔍 点击查看大图</span></div>
+          </div>
+          <div class="card-body">
+            <div class="card-module">${mod.name}</div>
+            <div class="card-title">${img.name}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  main.appendChild(sec);
+});
+
+// ===== LIGHTBOX =====
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImg');
+const lbModule = document.getElementById('lbModule');
+const lbTitle = document.getElementById('lbTitle');
+const lbCounter = document.getElementById('lbCounter');
+let lbIdx = 0;
+
+function openLb(idx){
+  lbIdx=idx;
+  const img=allImages[idx];
+  lbImg.src=IMG_BASE+img.file;lbImg.alt=img.name;
+  lbModule.textContent=img.module;lbTitle.textContent=img.name;
+  lbCounter.textContent=`${idx+1} / ${allImages.length}`;
+  lb.classList.add('open');document.body.style.overflow='hidden';
+}
+function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+function navLb(d){
+  lbIdx=(lbIdx+d+allImages.length)%allImages.length;
+  const img=allImages[lbIdx];
+  lbImg.src=IMG_BASE+img.file;lbImg.alt=img.name;
+  lbModule.textContent=img.module;lbTitle.textContent=img.name;
+  lbCounter.textContent=`${lbIdx+1} / ${allImages.length}`;
+}
+
+document.getElementById('lbClose').addEventListener('click',closeLb);
+document.getElementById('lbPrev').addEventListener('click',()=>navLb(-1));
+document.getElementById('lbNext').addEventListener('click',()=>navLb(1));
+lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
+
+main.addEventListener('click',e=>{
+  const card=e.target.closest('.module-card');
+  if(!card)return;
+  const idx=parseInt(card.dataset.idx);
+  if(!isNaN(idx))openLb(idx);
+});
+
+document.addEventListener('keydown',e=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowLeft')navLb(-1);
+  if(e.key==='ArrowRight')navLb(1);
+});
+
+// ===== REVEAL ON SCROLL =====
+const revealEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible');});
+},{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+revealEls.forEach(el=>obs.observe(el));
+
+// Hide scroll prompt once user scrolls past 200px
+window.addEventListener('scroll',()=>{
+  const prompt=document.querySelector('.scroll-prompt');
+  if(window.scrollY>200)prompt.style.opacity='0';
+  else prompt.style.opacity='1';
+},{passive:true});
+
+// ===== STARFIELD =====
+const canvas=document.getElementById('starfield');
+const ctx=canvas.getContext('2d');
+let stars=[],scanLines=[],W,H,dpr;
+
+function resize(){
+  dpr=Math.min(window.devicePixelRatio||1,2);
+  W=canvas.width=innerWidth*dpr;H=canvas.height=innerHeight*dpr;
+  canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';
+  ctx.setTransform(1,0,0,1,0,0);ctx.scale(dpr,dpr);
+  initStars();
+}
+window.addEventListener('resize',resize);
+resize();
+
+function initStars(){
+  const w=innerWidth,h=innerHeight;
+  stars=[];scanLines=[];
+  for(let i=0;i<100;i++)stars.push({
+    x:Math.random()*w,y:Math.random()*h,
+    r:Math.random()*1.4+0.4,
+    vx:(Math.random()-0.5)*0.2,vy:(Math.random()-0.5)*0.2,
+    hue:Math.random()<0.3?160:Math.random()<0.5?200:260
+  });
+  for(let i=0;i<5;i++)stars.push({
+    x:Math.random()*w,y:Math.random()*h,
+    r:2.2+Math.random()*1.4,
+    vx:(Math.random()-0.5)*0.35,vy:(Math.random()-0.5)*0.35,
+    hue:160,satellite:true
+  });
+  for(let i=0;i<3;i++)scanLines.push({
+    y:Math.random()*h,speed:0.25+Math.random()*0.55,
+    alpha:0.025+Math.random()*0.045,h:36+Math.random()*56
+  });
+}
+
+function draw(){
+  const w=innerWidth,h=innerHeight;
+  ctx.clearRect(0,0,w,h);
+
+  stars.forEach(s=>{
+    s.x+=s.vx;s.y+=s.vy;
+    if(s.x<0)s.x=w;if(s.x>w)s.x=0;
+    if(s.y<0)s.y=h;if(s.y>h)s.y=0;
+  });
+
+  const CONN=130,MAXC=3;
+  for(let i=0;i<stars.length;i++){
+    const a=stars[i];let n=0;
+    for(let j=i+1;j<stars.length&&n<MAXC;j++){
+      const b=stars[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<CONN){n++;
+        const alpha=(1-d/CONN)*0.13;
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle=`hsla(${(a.hue+b.hue)/2},65%,58%,${alpha})`;
+        ctx.lineWidth=0.5;ctx.stroke();
+      }
+    }
+  }
+
+  stars.forEach(s=>{
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=s.satellite?`hsla(${s.hue},80%,68%,0.85)`:`hsla(${s.hue},55%,78%,0.55)`;
+    ctx.fill();
+    if(s.satellite){
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r*3,0,Math.PI*2);
+      ctx.fillStyle=`hsla(${s.hue},80%,68%,0.07)`;ctx.fill();
+    }
+  });
+
+  scanLines.forEach(sl=>{
+    sl.y+=sl.speed;if(sl.y>h+sl.h)sl.y=-sl.h;
+    const g=ctx.createLinearGradient(0,sl.y-sl.h/2,0,sl.y+sl.h/2);
+    g.addColorStop(0,'rgba(6,214,160,0)');
+    g.addColorStop(0.5,`rgba(6,214,160,${sl.alpha})`);
+    g.addColorStop(1,'rgba(6,214,160,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,sl.y-sl.h/2,w,sl.h);
+  });
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+document.addEventListener('mousemove',e=>{
+  const mx=(e.clientX/innerWidth-0.5)*0.25,my=(e.clientY/innerHeight-0.5)*0.25;
+  stars.forEach(s=>{s.vx+=mx*0.004;s.vy+=my*0.004;});
+});
+</script>
+</body>
+</html>
