@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>遥感影像智能解译框架 — 功能全景</title>
+  <title> Appleyk's 作品集展示</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2306d6a0'/%3E%3Cstop offset='100%25' style='stop-color:%2338bdf8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='46' font-family='system-ui' font-size='26' font-weight='900' fill='%23030712' text-anchor='middle'%3EYK%3C/text%3E%3C/svg%3E">
   <style>
     /* ===== RESET & BASE ===== */
     *,
@@ -345,6 +346,365 @@
       outline: none
     }
 
+    /* ===== PROJECT SWITCHER ===== */
+    .project-switcher {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 24px 48px;
+    }
+
+    .project-switcher-inner {
+      display: flex;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.1);
+      border-radius: 100px;
+      padding: 5px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: relative;
+    }
+
+    .project-switcher-inner::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      bottom: 5px;
+      left: 5px;
+      width: calc(50% - 5px);
+      background: linear-gradient(135deg, rgba(6, 214, 160, 0.18), rgba(56, 189, 248, 0.1));
+      border-radius: 100px;
+      border: 1px solid rgba(6, 214, 160, 0.2);
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .project-switcher-inner.right::after {
+      transform: translateX(100%);
+    }
+
+    .project-tab {
+      position: relative;
+      z-index: 1;
+      padding: 12px 28px;
+      border-radius: 100px;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      transition: color 0.35s, text-shadow 0.35s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .project-tab.active {
+      color: #e2e8f0;
+      text-shadow: 0 0 20px rgba(6, 214, 160, 0.3);
+    }
+
+    .project-tab:hover:not(.active) {
+      color: #94a3b8
+    }
+
+    .project-tab .tab-icon {
+      font-size: 1.1rem
+    }
+
+    .project-tab .tab-label-mobile {
+      display: none
+    }
+
+    /* ===== ECO CAROUSEL ===== */
+    .eco-carousel {
+      position: relative;
+      z-index: 1;
+      width: 80%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px 0 200px;
+      min-height: 440px;
+    }
+
+    .eco-slide {
+      display: none;
+      animation: fadeSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .eco-slide.active {
+      display: block
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(30px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0)
+      }
+    }
+
+    .eco-slide-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .eco-slide-icon {
+      font-size: 1.6rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(6, 214, 160, 0.08);
+      border: 1px solid rgba(6, 214, 160, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .eco-slide-title-wrap {
+      text-align: center
+    }
+
+    .eco-slide-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.01em;
+    }
+
+    .eco-slide-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .eco-slide-counter {
+      font-size: 0.78rem;
+      color: #475569;
+      letter-spacing: 0.04em;
+    }
+
+    /* Image layouts */
+    .eco-slide-body {
+      display: flex;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .eco-slide-body.count-1 {
+      justify-content: center
+    }
+
+    .eco-slide-body.count-2 {
+      justify-content: center
+    }
+
+    .eco-slide-body.count-3 {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .eco-slide-body.count-3 .eco-img-card {
+      flex: 1;
+      min-width: 0;
+      max-width: 32%;
+      aspect-ratio: 16/10;
+      max-height: 240px;
+    }
+
+    .eco-img-card {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.08);
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      flex: 1;
+      min-width: 0;
+      aspect-ratio: 16/10;
+      max-height: 380px;
+    }
+
+    .eco-img-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.25);
+      box-shadow: 0 16px 48px -16px rgba(6, 214, 160, 0.1);
+    }
+
+    .eco-img-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #000;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .eco-img-card:hover img {
+      transform: scale(1.03)
+    }
+
+    .eco-img-card .eco-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(3, 7, 18, 0.8));
+      display: flex;
+      align-items: flex-end;
+      padding: 10px 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .eco-img-card:hover .eco-img-overlay {
+      opacity: 1
+    }
+
+    .eco-img-overlay span {
+      font-size: 0.75rem;
+      color: #e2e8f0;
+      background: rgba(3, 7, 18, 0.55);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .count-1 .eco-img-card {
+      max-width: 60%
+    }
+
+    .count-2 .eco-img-card {
+      max-width: 42%
+    }
+
+    /* Nav arrows — inline with header */
+    .eco-nav-inline {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(6, 214, 160, 0.06);
+      border: 1.5px solid rgba(6, 214, 160, 0.2);
+      color: #06d6a0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: inherit;
+      line-height: 1;
+      position: relative;
+    }
+
+    .eco-nav-inline::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: 0 0 0 0 rgba(6, 214, 160, 0);
+      transition: box-shadow 0.3s;
+    }
+
+    .eco-nav-inline:hover {
+      background: rgba(6, 214, 160, 0.18);
+      border-color: rgba(6, 214, 160, 0.5);
+      color: #f1f5f9;
+      transform: scale(1.08);
+      box-shadow: 0 0 28px rgba(6, 214, 160, 0.25), inset 0 0 16px rgba(6, 214, 160, 0.06);
+    }
+
+    .eco-nav-inline:hover::after {
+      box-shadow: 0 0 20px 6px rgba(6, 214, 160, 0.18);
+    }
+
+    .eco-nav-inline:active {
+      transform: scale(0.94);
+      transition: transform 0.12s;
+    }
+
+    .eco-nav-inline.hidden {
+      opacity: 0.2;
+      pointer-events: none;
+      border-color: rgba(255, 255, 255, 0.04);
+      color: #475569;
+      background: rgba(15, 23, 42, 0.3);
+    }
+
+    /* Dots */
+    .eco-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .eco-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .eco-dot.active {
+      background: #06d6a0;
+      border-color: #06d6a0;
+      box-shadow: 0 0 10px rgba(6, 214, 160, 0.4);
+      width: 24px;
+      border-radius: 100px;
+    }
+
+    /* ===== PROJECT PANELS ===== */
+    .project-panel {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    .project-panel.active {
+      display: block;
+      opacity: 1;
+      padding-bottom: 160px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 24px;
+      color: #64748b;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .footer span {
+      background: linear-gradient(135deg, #06d6a0, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     /* ===== SCROLL PROMPT — BIG & OBVIOUS ===== */
     .scroll-prompt {
       display: flex;
@@ -594,16 +954,7 @@
       transform: translateY(0)
     }
 
-    /* ===== FOOTER ===== */
-    .footer {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 60px 24px;
-      border-top: 1px solid rgba(56, 189, 248, 0.06);
-      color: #475569;
-      font-size: 0.78rem;
-    }
+
 
     /* ===== LIGHTBOX ===== */
     .lightbox {
@@ -785,6 +1136,69 @@
       .video-body {
         padding: 12px 18px 18px
       }
+
+      .project-tab {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        gap: 4px
+      }
+
+      .project-tab .tab-icon {
+        font-size: 0.95rem
+      }
+
+      .eco-carousel {
+        width: 92%;
+        padding: 16px 0 140px;
+        min-height: 340px
+      }
+
+      .eco-slide-body {
+        flex-direction: column
+      }
+
+      .eco-slide-body.count-2 {
+        flex-direction: column
+      }
+
+      .eco-slide-body.count-3 {
+        gap: 6px
+      }
+
+      .eco-slide-body.count-3 .eco-img-card {
+        max-height: 160px
+      }
+
+      .count-1 .eco-img-card,
+      .count-2 .eco-img-card {
+        max-width: 100%
+      }
+
+      .eco-img-card {
+        max-height: 260px
+      }
+
+      .eco-nav-inline {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem
+      }
+
+      .eco-slide-header {
+        flex-wrap: wrap
+      }
+
+      .project-panel.active {
+        padding-bottom: 100px
+      }
+
+      .eco-slide-title {
+        font-size: 1.05rem
+      }
+
+      .eco-slide-counter {
+        font-size: 0.7rem
+      }
     }
 
     @media(prefers-reduced-motion:reduce) {
@@ -822,28 +1236,28 @@
   <section class="hero">
     <div class="hero-content">
       <div class="platform-badge">
-        <span class="dot"></span> 遥感影像智能解译框架
+        <span class="dot"></span> <span id="heroBadge">遥感影像智能解译框架</span>
       </div>
       <h1>
-        <span class="line1"></span>
-        <span class="line2">从像素到洞察 · AI 驱动遥感分析</span>
+        <span class="line1" id="heroProjectName"></span>
+        <span class="line2" id="heroTagline">从像素到洞察 · AI 驱动遥感分析</span>
       </h1>
-      <p class="hero-desc">
+      <p class="hero-desc" id="heroDesc">
         集多源数据管理、样本标注、模型训练、智能解译与 Agent 协作于一体，
         为遥感影像分析提供端到端的智能化解决方案
       </p>
-      <div class="hero-stats">
+      <div class="hero-stats" id="heroStats">
         <div class="hero-stat">
-          <div class="num">6</div>
-          <div class="label">核心功能模块</div>
+          <div class="num" id="stat1">6</div>
+          <div class="label" id="statLabel1">核心功能模块</div>
         </div>
         <div class="hero-stat">
-          <div class="num">23</div>
-          <div class="label">功能子页面</div>
+          <div class="num" id="stat2">23</div>
+          <div class="label" id="statLabel2">功能子页面</div>
         </div>
         <div class="hero-stat">
-          <div class="num">AI</div>
-          <div class="label">Agent 智能驱动</div>
+          <div class="num" id="stat3">AI</div>
+          <div class="label" id="statLabel3">Agent 智能驱动</div>
         </div>
       </div>
 
@@ -857,32 +1271,54 @@
     </div>
   </section>
 
-  <!-- ===== VIDEO SHOWCASE ===== -->
-  <section class="video-showcase reveal">
-    <div class="video-card">
-      <div class="video-header">
-        <span class="video-badge">
-          <span class="live-dot"></span> 视频演示
-        </span>
-        <div>
-          <div class="video-title">🤖 AI Agent 人机交互展示</div>
+  <!-- ===== PROJECT SWITCHER ===== -->
+  <div class="project-switcher reveal">
+    <div class="project-switcher-inner" id="switcherInner">
+      <button class="project-tab active" data-project="0">
+        <span class="tab-icon">🛰️</span> 遥感影像智能解译框架
+      </button>
+      <button class="project-tab" data-project="1">
+        <span class="tab-icon">🌍</span> 生态环境遥感云服务一体机
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== PROJECT PANEL 0: IIS ===== -->
+  <div class="project-panel active" id="panel0">
+
+    <!-- ===== VIDEO SHOWCASE ===== -->
+    <section class="video-showcase reveal">
+      <div class="video-card">
+        <div class="video-header">
+          <span class="video-badge">
+            <span class="live-dot"></span> 视频演示
+          </span>
+          <div>
+            <div class="video-title">🤖 AI Agent 人机交互展示</div>
+          </div>
+        </div>
+        <div class="video-body">
+          <video controls preload="metadata" poster="images/iis/15_Agent智能客服.png">
+            <source src="videos/Agent.mp4" type="video/mp4">
+            您的浏览器不支持视频播放
+          </video>
         </div>
       </div>
-      <div class="video-body">
-        <video controls preload="metadata" poster="images/iis/15_Agent智能客服.png">
-          <source src="videos/Agent.mp4" type="video/mp4">
-          您的浏览器不支持视频播放
-        </video>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== MODULE SECTIONS ===== -->
-  <main id="mainContent"></main>
+    <!-- ===== MODULE SECTIONS ===== -->
+    <main id="mainContent"></main>
+
+  </div><!-- /project-panel 0 -->
+
+  <!-- ===== PROJECT PANEL 1: ECO ===== -->
+  <div class="project-panel" id="panel1">
+    <main id="mainContent2"></main>
+  </div><!-- /project-panel 1 -->
 
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
-    <p>遥感影像智能解译框架 · IIS &copy; 2026</p>
+    <p>本页面由 <span>AI</span> 辅助生成 &copy;2026</p>
   </footer>
 
   <!-- ===== LIGHTBOX ===== -->
@@ -901,79 +1337,219 @@
   </div>
 
   <script>
-    // ===== DATA =====
-    const modules = [
-      {
-        id: 'dashboard', name: '首页大屏', icon: '🖥️',
-        desc: '全局态势感知，关键指标一屏统览，支持多维度数据可视化与实时监控',
-        images: [{ file: '1_首页大屏.png', name: '首页大屏' }]
-      },
-      {
-        id: 'sample', name: '标样中心', icon: '🎯',
-        desc: '样本库管理与标注体系，支持分布式任务调度、日志链路追踪及一键训练',
-        images: [
-          { file: '2_标样中心_样本库管理.png', name: '样本库管理' },
-          { file: '3_标样中心_样本库_样本详情查看.png', name: '样本详情查看' },
-          { file: '4.1_标样中心_样本库_分布式任务调度_日志链路追踪.png', name: '分布式任务调度·日志链路追踪 ①' },
-          { file: '4.2_标样中心_样本库_分布式任务调度_日志链路追踪.png', name: '分布式任务调度·日志链路追踪 ②' },
-          { file: '5_标样中心_样本库_样本集（一键训练）.png', name: '样本集（一键训练）' },
-          { file: '5.1_标样中心_影像标注.png', name: '影像标注' },
+    // ===== PROJECTS DATA =====
+    const projects = [
+      { // Project 0: IIS
+        name: '遥感影像智能解译框架', icon: '🛰️',
+        tagline: '从像素到洞察 · AI 驱动遥感分析',
+        desc: '集多源数据管理、样本标注、模型训练、智能解译与 Agent 协作于一体，为遥感影像分析提供端到端的智能化解决方案',
+        imgBase: 'images/iis/',
+        stats: [
+          { num: '6', label: '核心功能模块' },
+          { num: '23', label: '功能子页面' },
+          { num: 'AI', label: 'Agent 智能驱动' }
+        ],
+        modules: [
+          {
+            id: 'dashboard', name: '首页大屏', icon: '🖥️',
+            desc: '全局态势感知，关键指标一屏统览，支持多维度数据可视化与实时监控',
+            images: [{ file: '1_首页大屏.png', name: '首页大屏' }]
+          },
+          {
+            id: 'sample', name: '标样中心', icon: '🎯',
+            desc: '样本库管理与标注体系，支持分布式任务调度、日志链路追踪及一键训练',
+            images: [
+              { file: '2_标样中心_样本库管理.png', name: '样本库管理' },
+              { file: '3_标样中心_样本库_样本详情查看.png', name: '样本详情查看' },
+              { file: '4.1_标样中心_样本库_分布式任务调度_日志链路追踪.png', name: '分布式任务调度·日志链路追踪 ①' },
+              { file: '4.2_标样中心_样本库_分布式任务调度_日志链路追踪.png', name: '分布式任务调度·日志链路追踪 ②' },
+              { file: '5_标样中心_样本库_样本集（一键训练）.png', name: '样本集（一键训练）' },
+              { file: '5.1_标样中心_影像标注.png', name: '影像标注' },
+            ]
+          },
+          {
+            id: 'data', name: '数据中心', icon: '🗄️',
+            desc: '多源异构遥感数据统一管理，支持影像、矢量、地图服务、文档等多种数据格式接入与检索',
+            images: [
+              { file: '6_数据中心_多源异构数据管理.png', name: '多源异构数据管理 ①' },
+              { file: '7_数据中心_多源异构数据管理.png', name: '多源异构数据管理 ②' },
+              { file: '8_数据中心☞多源异构数据管理.png', name: '多源异构数据管理 ③' },
+              { file: '9_数据中心_多源异构数据管理.png', name: '多源异构数据管理 ④' },
+            ]
+          },
+          {
+            id: 'model', name: '模型中心', icon: '🧠',
+            desc: '模型列表展示与解译任务创建，支持多种网络模型管理与参数调优',
+            images: [
+              { file: '10_模型中心.png', name: '模型中心总览' },
+              { file: '11_模型中心_模型参数.png', name: '模型参数配置' },
+              { file: '12_模型中心_创建解译任务.png', name: '创建解译任务' },
+            ]
+          },
+          {
+            id: 'task', name: '任务中心', icon: '📋',
+            desc: '解译结果预览与移动终端适配，随时随地掌握任务进展',
+            images: [
+              { file: '13_任务中心_结果预览.png', name: '结果预览' },
+              { file: '14_任务中心_移动终端解译.png', name: '移动终端解译' },
+              { file: '14.2_任务中心_解译流程查看.png', name: '解译流程查看' },
+            ]
+          },
+          {
+            id: 'agent', name: 'Agent 智能体', icon: '🤖',
+            desc: 'AI Agent 辅助数据筛查与自动上图，借助 Dify 搭建人机交互解译工作流',
+            images: [
+              { file: '15_Agent智能客服.png', name: 'Agent 智能客服' },
+              { file: '16_Agent辅助数据筛查及解译.png', name: '辅助数据筛查' },
+              { file: '17_Agent辅助数据筛查自动上图.png', name: '辅助数据筛查·自动上图' },
+              { file: '18_借助Dify搭建人机交互解译工作流.png', name: 'Dify 人机交互解译工作流编排' },
+              { file: '18.2_RAG数据集构建.png', name: 'RAG 数据集构建' },
+              { file: '19_RAG召回测试.png', name: 'RAG 召回测试' },
+            ]
+          }
         ]
       },
-      {
-        id: 'data', name: '数据中心', icon: '🗄️',
-        desc: '多源异构遥感数据统一管理，支持影像、矢量、地图服务、文档等多种数据格式接入与检索',
-        images: [
-          { file: '6_数据中心_多源异构数据管理.png', name: '多源异构数据管理 ①' },
-          { file: '7_数据中心_多源异构数据管理.png', name: '多源异构数据管理 ②' },
-          { file: '8_数据中心☞多源异构数据管理.png', name: '多源异构数据管理 ③' },
-          { file: '9_数据中心_多源异构数据管理.png', name: '多源异构数据管理 ④' },
-        ]
-      },
-      {
-        id: 'model', name: '模型中心', icon: '🧠',
-        desc: '模型列表展示与解译任务创建，支持多种网络模型管理与参数调优',
-        images: [
-          { file: '10_模型中心.png', name: '模型中心总览' },
-          { file: '11_模型中心_模型参数.png', name: '模型参数配置' },
-          { file: '12_模型中心_创建解译任务.png', name: '创建解译任务' },
-        ]
-      },
-      {
-        id: 'task', name: '任务中心', icon: '📋',
-        desc: '解译结果预览与移动终端适配，随时随地掌握任务进展',
-        images: [
-          { file: '13_任务中心_结果预览.png', name: '结果预览' },
-          { file: '14_任务中心_移动终端解译.png', name: '移动终端解译' },
-          { file: '14.2_任务中心_解译流程查看.png', name: '解译流程查看' },
-        ]
-      },
-      {
-        id: 'agent', name: 'Agent 智能体', icon: '🤖',
-        desc: 'AI Agent 辅助数据筛查与自动上图，借助 Dify 搭建人机交互解译工作流',
-        images: [
-          { file: '15_Agent智能客服.png', name: 'Agent 智能客服' },
-          { file: '16_Agent辅助数据筛查及解译.png', name: '辅助数据筛查' },
-          { file: '17_Agent辅助数据筛查自动上图.png', name: '辅助数据筛查·自动上图' },
-          { file: '18_借助Dify搭建人机交互解译工作流.png', name: 'Dify 人机交互解译工作流编排' },
-          { file: '18.2_RAG数据集构建.png', name: 'RAG 数据集构建' },
-          { file: '19_RAG召回测试.png', name: 'RAG 召回测试' },
+      { // Project 1: ECO
+        name: '生态环境遥感产品一体化云服务', icon: '🌍',
+        tagline: '微前端架构 · 多系统一体化融合',
+        desc: '基于微前端架构，将数据管理、数据查询、数据处理、地图服务等子系统无缝融合，依托国产化操作系统编译适配，打造软硬一体化云服务',
+        imgBase: 'images/assets/',
+        stats: [
+          { num: '10', label: '核心功能模块' },
+          { num: '22', label: '功能子页面' },
+          { num: 'QianKun', label: '微前端框架' }
+        ],
+        slides: [
+          {
+            title: '国产麒麟操作系统适配', icon: '💻',
+            desc: '全面适配国产麒麟操作系统，同时支持 x86 与 arm64 双架构运行',
+            images: [
+              { file: '1.1_国产麒麟操作系统（x86架构 与 arm64架构）.png', name: 'x86架构' },
+              { file: '1.2_国产麒麟操作系统（x86架构 与 arm64架构）.png', name: 'arm64架构 ①' },
+              { file: '1.3_国产麒麟操作系统（x86架构 与 arm64架构）.png', name: 'arm64架构 ②' },
+            ]
+          },
+          {
+            title: '服务端首页大屏', icon: '📊',
+            desc: '服务端数据监控总览，全局态势感知与关键指标一屏统览',
+            images: [
+              { file: '2_首页大屏（服务端）.png', name: '服务端首页大屏' },
+            ]
+          },
+          {
+            title: '数据分发（服务端）', icon: '📡',
+            desc: '服务端数据分发管理，高效完成数据推送与节点同步',
+            images: [
+              { file: '3.1_数据分发（服务端）.png', name: '服务端数据分发 ①' },
+              { file: '3.2_数据分发（服务端）.png', name: '服务端数据分发 ②' },
+            ]
+          },
+          {
+            title: '遥感影像快速切片系统', icon: '🔪',
+            desc: '服务端配套快速切片系统，高压缩比构建瓦片数据包',
+            images: [
+              { file: '4.1_遥感影像快速切片系统（服务端配套）.png', name: '快速切片系统 ①' },
+              { file: '4.2_遥感影像快速切片系统（服务端配套）.png', name: '快速切片系统 ②' },
+            ]
+          },
+          {
+            title: '接收端大屏', icon: '🛰️',
+            desc: '节点端数据监控大屏，实时展示接收端运行状态与关键指标',
+            images: [
+              { file: '5_接收端大屏（节点端）.png', name: '接收端大屏' },
+            ]
+          },
+          {
+            title: '接收端控制台管理', icon: '⚙️',
+            desc: '节点控制台与资产类型管理，统一管控节点配置与资产分类',
+            images: [
+              { file: '6.1_接收端（节点）控制台 .png', name: '节点控制台' },
+              { file: '6.2_接收端（节点）资产类型管理.png', name: '资产类型管理' },
+            ]
+          },
+          {
+            title: '数据查询', icon: '🔍',
+            desc: '多维度数据检索与查询，快速定位目标数据资源',
+            images: [
+              { file: '7_接收端（节点）数据查询.png', name: '数据查询' },
+            ]
+          },
+          {
+            title: '数据入库', icon: '📥',
+            desc: '数据入库流程管理，支持入库任务创建与全链路流程追踪查看',
+            images: [
+              { file: '8.1_接收端（节点）数据入库.png', name: '数据入库' },
+              { file: '8.2_接收端（节点）数据入库流程查看.png', name: '入库流程查看' },
+            ]
+          },
+          {
+            title: '数据浏览', icon: '👁️',
+            desc: '磁盘阵列信息化管理 + 实体影像数据免切片实时预览，支持多模式切换',
+            images: [
+              { file: '9.1_数据浏览（磁盘阵列信息化管理+实体影像数据免切片实时预览）.png', name: '磁盘阵列信息化管理' },
+              { file: '9.2_数据浏览（多模式实时预览）.png', name: '多模式实时预览' },
+            ]
+          },
+          {
+            title: '数据处理', icon: '⚡',
+            desc: '数据处理任务管理与全流程追踪，高效完成大规模影像数据处理',
+            images: [
+              { file: '10.1_数据处理.png', name: '数据处理' },
+              { file: '10.2_数据处理流程查看.png', name: '数据处理流程查看' },
+            ]
+          },
+          {
+            title: '数据分发（接收端）', icon: '📦',
+            desc: '接收端节点数据分发，将处理数据分发给下游用户',
+            images: [
+              { file: '11_接收端（节点）数据分发.png', name: '数据分发（接收端）' },
+            ]
+          },
+          {
+            title: '地图服务', icon: '🗺️',
+            desc: '地图服务预览、任务集管理与切片任务创建，支撑遥感影像瓦片化在线发布',
+            images: [
+              { file: '12.1_地图服务预览.png', name: '地图服务预览' },
+              { file: '12.2_地图服务_任务集管理.png', name: '任务集管理' },
+              { file: '12.3_地图服务_新建切片任务.png', name: '新建切片任务' },
+            ]
+          }
         ]
       }
     ];
 
-    const allImages = modules.flatMap(m => m.images.map(i => ({ ...i, module: m.name, moduleId: m.id })));
-    const IMG_BASE = 'images/iis/';
+    // ===== STATE =====
+    let currentProject = 0;
+    let allImages = [];
+    let IMG_BASE = '';
+    const panelEls = [document.getElementById('panel0'), document.getElementById('panel1')];
+    const mainEls = [document.getElementById('mainContent'), document.getElementById('mainContent2')];
 
-    // ===== BUILD SECTIONS =====
-    const main = document.getElementById('mainContent');
-    modules.forEach((mod, idx) => {
-      const sec = document.createElement('section');
-      sec.className = 'section reveal';
-      sec.id = 'section-' + mod.id;
-      const isDashboard = mod.id === 'dashboard';
+    // ===== REVEAL ON SCROLL =====
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-      sec.innerHTML = `
+    // ===== BUILD SECTIONS FOR A PROJECT =====
+    let ecoCarousel, ecoSlides, ecoDots, ecoCurrentSlide = 0;
+
+    function buildProject(projIdx) {
+      const proj = projects[projIdx];
+      const main = mainEls[projIdx];
+      if (main.children.length > 0) return;
+
+      if (projIdx === 0) {
+        // Project 0: Grid layout
+        IMG_BASE = proj.imgBase;
+        const mods = proj.modules;
+        const imgs = mods.flatMap(m => m.images.map(i => ({ ...i, module: m.name, moduleId: m.id, projIdx })));
+        allImages = allImages.concat(imgs);
+        mods.forEach((mod, idx) => {
+          const sec = document.createElement('section');
+          sec.className = 'section reveal';
+          sec.id = 'section-' + mod.id;
+          const isFirst = idx === 0;
+          sec.innerHTML = `
     <div class="section-header">
       <div class="section-eyebrow">${mod.icon}  Module ${String(idx + 1).padStart(2, '0')}</div>
       <h2>${mod.name}</h2>
@@ -981,34 +1557,123 @@
     </div>
     <div class="module-grid">
       ${mod.images.map((img, i) => {
-        const gIdx = allImages.findIndex(x => x.file === img.file && x.moduleId === mod.id);
-        if (isDashboard && i === 0) {
-          return `<div class="module-card feature-card" data-idx="${gIdx}">
-            <div class="card-thumb">
-              <img src="${IMG_BASE + img.file}" alt="${img.name}" loading="lazy">
-              <div class="card-overlay"><span class="zoom-badge">🔍 点击查看大图</span></div>
-            </div>
-            <div class="card-body">
-              <div class="card-module">${mod.name}</div>
-              <div class="card-title">${img.name}</div>
-              <div class="card-desc">${mod.desc}</div>
-            </div>
-          </div>`;
-        }
-        return `<div class="module-card" data-idx="${gIdx}">
-          <div class="card-thumb">
-            <img src="${IMG_BASE + img.file}" alt="${img.name}" loading="lazy">
-            <div class="card-overlay"><span class="zoom-badge">🔍 点击查看大图</span></div>
-          </div>
-          <div class="card-body">
-            <div class="card-module">${mod.name}</div>
-            <div class="card-title">${img.name}</div>
-          </div>
-        </div>`;
-      }).join('')}
+            const gIdx = allImages.findIndex(x => x.file === img.file && x.moduleId === mod.id);
+            if (isFirst && i === 0) {
+              return `<div class="module-card feature-card" data-idx="${gIdx}">
+            <div class="card-thumb"><img src="${IMG_BASE + img.file}" alt="${img.name}" loading="lazy">
+            <div class="card-overlay"><span class="zoom-badge">🔍 点击查看大图</span></div></div>
+            <div class="card-body"><div class="card-module">${mod.name}</div>
+            <div class="card-title">${img.name}</div><div class="card-desc">${mod.desc}</div></div></div>`;
+            }
+            return `<div class="module-card" data-idx="${gIdx}">
+          <div class="card-thumb"><img src="${IMG_BASE + img.file}" alt="${img.name}" loading="lazy">
+          <div class="card-overlay"><span class="zoom-badge">🔍 点击查看大图</span></div></div>
+          <div class="card-body"><div class="card-module">${mod.name}</div><div class="card-title">${img.name}</div></div></div>`;
+          }).join('')}
     </div>`;
-      main.appendChild(sec);
-    });
+          main.appendChild(sec);
+        });
+        main.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+      } else {
+        // Project 1: Carousel layout
+        IMG_BASE = proj.imgBase;
+        const slides = proj.slides;
+        const imgs = slides.flatMap((s, si) => s.images.map(i => ({ ...i, module: s.title, moduleId: 'eco' + si, projIdx })));
+        allImages = allImages.concat(imgs);
+
+        // Build carousel HTML
+        let html = '<div class="eco-carousel-inner">';
+        slides.forEach((slide, si) => {
+          const count = slide.images.length;
+          html += `<div class="eco-slide${si === 0 ? ' active' : ''}" data-slide="${si}">
+            <div class="eco-slide-header">
+              <button class="eco-nav-inline eco-nav-prev" data-dir="-1" aria-label="上一张">←</button>
+              <div class="eco-slide-icon">${slide.icon}</div>
+              <div class="eco-slide-title-wrap"><div class="eco-slide-title">${slide.title}</div>
+              <div class="eco-slide-desc">${slide.desc}</div></div>
+              <div class="eco-slide-counter">${si + 1} / ${slides.length}</div>
+              <button class="eco-nav-inline eco-nav-next" data-dir="1" aria-label="下一张">→</button>
+            </div>
+            <div class="eco-slide-body count-${count}">`;
+          slide.images.forEach(img => {
+            const gIdx = allImages.findIndex(x => x.file === img.file && x.moduleId === 'eco' + si);
+            html += `<div class="eco-img-card" data-idx="${gIdx}">
+              <img src="${IMG_BASE + img.file}" alt="${img.name}" loading="lazy">
+              <div class="eco-img-overlay"><span>🔍 ${img.name}</span></div>
+            </div>`;
+          });
+          html += '</div></div>';
+        });
+        html += '</div>';
+
+        // Dots
+        html += '<div class="eco-dots">';
+        slides.forEach((_, si) => {
+          html += `<div class="eco-dot${si === 0 ? ' active' : ''}" data-dot="${si}"></div>`;
+        });
+        html += '</div>';
+
+        main.innerHTML = html;
+
+        // Cache refs
+        ecoCarousel = main;
+        ecoSlides = main.querySelectorAll('.eco-slide');
+        ecoDots = main.querySelectorAll('.eco-dot');
+        ecoCurrentSlide = 0;
+
+        // Nav events — delegated from inline arrows
+        main.addEventListener('click', e => {
+          const btn = e.target.closest('.eco-nav-inline');
+          if (!btn) return;
+          const dir = parseInt(btn.dataset.dir);
+          if (!isNaN(dir)) ecoGoTo(ecoCurrentSlide + dir);
+        });
+        // Initial arrow state
+        updateEcoArrows();
+        ecoDots.forEach(d => {
+          d.addEventListener('click', () => ecoGoTo(parseInt(d.dataset.dot)));
+        });
+
+        // Keyboard nav when panel is active
+        main.setAttribute('tabindex', '0');
+        main.addEventListener('keydown', e => {
+          if (lb.classList.contains('open')) return;
+          if (e.key === 'ArrowLeft') ecoGoTo(ecoCurrentSlide - 1);
+          if (e.key === 'ArrowRight') ecoGoTo(ecoCurrentSlide + 1);
+        });
+      }
+    }
+
+    function updateEcoArrows() {
+      if (!ecoSlides) return;
+      const total = ecoSlides.length;
+      ecoSlides.forEach((slide, i) => {
+        const prev = slide.querySelector('.eco-nav-prev');
+        const next = slide.querySelector('.eco-nav-next');
+        if (prev) prev.classList.toggle('hidden', i === 0);
+        if (next) next.classList.toggle('hidden', i === total - 1);
+      });
+    }
+
+    function ecoGoTo(idx) {
+      if (!ecoSlides || !ecoDots) return;
+      const total = ecoSlides.length;
+      if (idx < 0) idx = total - 1;
+      if (idx >= total) idx = 0;
+      ecoSlides[ecoCurrentSlide].classList.remove('active');
+      ecoDots[ecoCurrentSlide].classList.remove('active');
+      ecoSlides[idx].classList.add('active');
+      ecoDots[idx].classList.add('active');
+      ecoCurrentSlide = idx;
+      // Update counter
+      const counter = ecoSlides[idx].querySelector('.eco-slide-counter');
+      if (counter) counter.textContent = `${idx + 1} / ${total}`;
+      updateEcoArrows();
+    }
+
+    // Build both projects upfront
+    buildProject(0); buildProject(1);
 
     // ===== LIGHTBOX =====
     const lb = document.getElementById('lightbox');
@@ -1018,21 +1683,26 @@
     const lbCounter = document.getElementById('lbCounter');
     let lbIdx = 0;
 
+    function getActiveImages() {
+      return allImages.filter(img => img.projIdx === currentProject);
+    }
     function openLb(idx) {
       lbIdx = idx;
-      const img = allImages[idx];
-      lbImg.src = IMG_BASE + img.file; lbImg.alt = img.name;
+      const imgs = getActiveImages();
+      const img = imgs[idx];
+      lbImg.src = projects[currentProject].imgBase + img.file; lbImg.alt = img.name;
       lbModule.textContent = img.module; lbTitle.textContent = img.name;
-      lbCounter.textContent = `${idx + 1} / ${allImages.length}`;
+      lbCounter.textContent = `${idx + 1} / ${imgs.length}`;
       lb.classList.add('open'); document.body.style.overflow = 'hidden';
     }
     function closeLb() { lb.classList.remove('open'); document.body.style.overflow = ''; }
     function navLb(d) {
-      lbIdx = (lbIdx + d + allImages.length) % allImages.length;
-      const img = allImages[lbIdx];
-      lbImg.src = IMG_BASE + img.file; lbImg.alt = img.name;
+      const imgs = getActiveImages();
+      lbIdx = (lbIdx + d + imgs.length) % imgs.length;
+      const img = imgs[lbIdx];
+      lbImg.src = projects[currentProject].imgBase + img.file; lbImg.alt = img.name;
       lbModule.textContent = img.module; lbTitle.textContent = img.name;
-      lbCounter.textContent = `${lbIdx + 1} / ${allImages.length}`;
+      lbCounter.textContent = `${lbIdx + 1} / ${imgs.length}`;
     }
 
     document.getElementById('lbClose').addEventListener('click', closeLb);
@@ -1040,11 +1710,19 @@
     document.getElementById('lbNext').addEventListener('click', () => navLb(1));
     lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
 
-    main.addEventListener('click', e => {
-      const card = e.target.closest('.module-card');
-      if (!card) return;
-      const idx = parseInt(card.dataset.idx);
-      if (!isNaN(idx)) openLb(idx);
+    // Delegate click on both main containers (module-card + eco-img-card)
+    mainEls.forEach(m => {
+      m.addEventListener('click', e => {
+        const card = e.target.closest('.module-card, .eco-img-card');
+        if (!card) return;
+        const idx = parseInt(card.dataset.idx);
+        if (!isNaN(idx)) {
+          const img = allImages[idx];
+          const imgs = getActiveImages();
+          const localIdx = imgs.findIndex(x => x.file === img.file && x.moduleId === img.moduleId);
+          if (localIdx >= 0) openLb(localIdx);
+        }
+      });
     });
 
     document.addEventListener('keydown', e => {
@@ -1054,18 +1732,61 @@
       if (e.key === 'ArrowRight') navLb(1);
     });
 
-    // ===== REVEAL ON SCROLL =====
-    const revealEls = document.querySelectorAll('.reveal');
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    revealEls.forEach(el => obs.observe(el));
+    // ===== PROJECT SWITCHER =====
+    const switcherInner = document.getElementById('switcherInner');
+    const tabBtns = document.querySelectorAll('.project-tab');
+
+    function switchProject(idx) {
+      if (currentProject === idx) return;
+      currentProject = idx;
+
+      // Update tabs
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabBtns[idx].classList.add('active');
+      if (idx === 0) switcherInner.classList.remove('right');
+      else switcherInner.classList.add('right');
+
+      // Update panels
+      panelEls.forEach((p, i) => { p.classList.toggle('active', i === idx); });
+
+      // Update hero
+      const proj = projects[idx];
+      document.getElementById('heroBadge').textContent = proj.name;
+      document.getElementById('heroTagline').textContent = proj.tagline;
+      document.getElementById('heroDesc').textContent = proj.desc;
+      proj.stats.forEach((s, i) => {
+        document.getElementById('stat' + (i + 1)).textContent = s.num;
+        document.getElementById('statLabel' + (i + 1)).textContent = s.label;
+      });
+
+      // Re-observe reveals in the new panel
+      panelEls[idx].querySelectorAll('.reveal').forEach(el => {
+        if (!el.classList.contains('visible')) obs.observe(el);
+      });
+
+      // Reset carousel to first slide
+      if (idx === 1 && typeof ecoGoTo === 'function') ecoGoTo(0);
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.project);
+        switchProject(idx);
+      });
+    });
+
+    // Observe static reveal elements
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
     // Hide scroll prompt once user scrolls past 200px
     window.addEventListener('scroll', () => {
       const prompt = document.querySelector('.scroll-prompt');
-      if (window.scrollY > 200) prompt.style.opacity = '0';
-      else prompt.style.opacity = '1';
+      if (prompt) {
+        if (window.scrollY > 200) prompt.style.opacity = '0';
+        else prompt.style.opacity = '1';
+      }
     }, { passive: true });
 
     // ===== STARFIELD =====
