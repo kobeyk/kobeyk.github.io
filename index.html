@@ -557,6 +557,24 @@
       flex-direction: column
     }
 
+    .gallery-stage.loading .gallery-caption::after {
+      content: ' ⏳ 加载中...';
+      color: #fbbf24;
+      font-size: 0.75rem
+    }
+
+    .gallery-stage.loading img {
+      opacity: 0.4;
+      filter: blur(4px);
+      transition: opacity 0.2s, filter 0.2s
+    }
+
+    .gallery-stage:not(.loading) img {
+      opacity: 1;
+      filter: none;
+      transition: opacity 0.3s, filter 0.3s
+    }
+
     .gallery-caption {
       text-align: center;
       font-size: 0.95rem;
@@ -2362,10 +2380,28 @@
       if (idx >= galleryImages.length) idx = 0;
       galleryIdx = idx;
       const img = galleryImages[idx];
-      document.getElementById('galleryImg').src = GALLERY_BASE + img.file;
-      document.getElementById('galleryImg').alt = img.name;
+      const el = document.getElementById('galleryImg');
+      const stage = document.getElementById('galleryStage');
+
+      // Show loading
+      stage.classList.add('loading');
       document.getElementById('galleryCaption').textContent = img.name;
       document.getElementById('galleryCounter').textContent = `${idx + 1} / ${galleryImages.length}`;
+
+      // Preload then swap
+      const preload = new Image();
+      preload.onload = function () {
+        el.src = GALLERY_BASE + img.file;
+        el.alt = img.name;
+        stage.classList.remove('loading');
+      };
+      preload.onerror = function () {
+        el.src = GALLERY_BASE + img.file;
+        el.alt = img.name;
+        stage.classList.remove('loading');
+      };
+      preload.src = GALLERY_BASE + img.file;
+
       const dots = document.querySelectorAll('#galleryDots .gallery-dot');
       dots.forEach((d, i) => d.classList.toggle('active', i === idx));
     }
