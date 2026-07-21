@@ -482,6 +482,11 @@
       right: auto
     }
 
+    /* 确保 overlay 关闭时，其子元素不会拦截点击事件 */
+    .about-overlay:not(.open) .about-slide.active {
+      pointer-events: none
+    }
+
     .about-slide.exit-left {
       opacity: 0;
       transform: translateX(-16px)
